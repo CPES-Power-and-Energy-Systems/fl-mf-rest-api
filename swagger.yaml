@@ -1,0 +1,515 @@
+openapi: 3.1.0
+info:
+  title: Federated Learning Multivariate Forecasting API - Client
+  description: "\nWelcome to our OpenAPI documentation for the INESC TEC Enershare\
+    \ Federated Learning Multivariate Forecasting API. \n\nThis REST API allows for\
+    \ participation in a privacy-preserving, collaborative forecasting process involving\
+    \ shared processes for data encryption, model fitting and forecast generation.\n\
+    \nThis documentation exposes the methods invoked by each API client instance for\
+    \ requesting and sharing information with other client instances.\n\n**Developers\
+    \ // Contacts:**\n- Jo\xC3\xA3o Viana (joao.p.viana@inesctec.pt)\n- Carla Gon\xC3\
+    \xA7alves (carla.s.goncalves@inesctec.pt)\n"
+  version: 0.1.0
+paths:
+  /is-alive:
+    get:
+      summary: Is Alive
+      operationId: is_alive_is_alive_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /encryption/start:
+    post:
+      tags:
+      - encryption
+      summary: Start Encryption
+      description: 'Method for signaling start of data encryption process.
+
+        The API will store first configurations for task.
+
+
+        This method also requires an initial configuration, such as:
+
+        - Launch time: maximum date to consider for data in the API
+
+        - Address book: Host of each participant in the encryption process'
+      operationId: start_encryption_encryption_start_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EncryptionStart'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /encryption/available-timestamps:
+    get:
+      tags:
+      - encryption
+      summary: Get Available Indexes
+      description: 'Method used to query each API data''s timestamps. Used for reaching
+        a common
+
+        set of available timestamps for all participants'
+      operationId: get_available_indexes_encryption_available_timestamps_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /encryption/metadata:
+    post:
+      tags:
+      - encryption
+      summary: Post Encryption Metadata
+      description: 'Method for receiving and storing final metadata prior to encryption
+        chain start.
+
+        Comprised of:
+
+        - Encryption timestamps: Timestamps common to all participants'' data
+
+        - Encryption order: ordered sequence of participants in the task
+
+        - Place in line: Ordinal position of participant in the chain (starting at
+        0)'
+      operationId: post_encryption_metadata_encryption_metadata_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EncryptionMetadata'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /encryption/cycle:
+    post:
+      tags:
+      - encryption
+      summary: Post Encryption Cycle
+      description: 'Method for passing processed data and carry on the encryption
+        task.
+
+        If no encrypted data is passed, this meaning this API instance should be
+
+        the first in the encryption chain. If not, applies local encryption key
+
+        to processed data and passes on to next participant''s API in the chain.'
+      operationId: post_encryption_cycle_encryption_cycle_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              title: Encrypted Data
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /encryption/anonymized-data:
+    get:
+      tags:
+      - encryption
+      summary: Get Anonymized Data
+      description: 'Method to retrieve anonymized data. It triggers the computation
+        of local
+
+        anonymization of data, to be sent using this endpoint for encryption purposes.'
+      operationId: get_anonymized_data_encryption_anonymized_data_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /encryption/close:
+    post:
+      tags:
+      - encryption
+      summary: Close Encryption Cycle
+      description: 'Method for closing the encryption task. This should be used by
+        the last
+
+        participant in the chain to signal to all others that encryption was
+
+        finalized and to share the encrypted data as a result.'
+      operationId: close_encryption_cycle_encryption_close_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              title: Globally Encrypted Data
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /fit/start:
+    post:
+      tags:
+      - fit
+      summary: Start Encryption
+      operationId: start_encryption_fit_start_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /fit/run:
+    post:
+      tags:
+      - fit
+      summary: Post Fit Run
+      operationId: post_fit_run_fit_run_post
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /fit/data:
+    get:
+      tags:
+      - fit
+      summary: Get Fitready Data
+      operationId: get_fitready_data_fit_data_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+    post:
+      tags:
+      - fit
+      summary: Get Fitready Data
+      operationId: get_fitready_data_fit_data_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              title: Data For Fit
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /fit/iteration/{it}:
+    post:
+      tags:
+      - fit
+      summary: Post Iteration Coefficients
+      operationId: post_iteration_coefficients_fit_iteration__it__post
+      parameters:
+      - name: it
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: It
+      responses:
+        '202':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    get:
+      tags:
+      - fit
+      summary: Get Iteration Coefficients
+      operationId: get_iteration_coefficients_fit_iteration__it__get
+      parameters:
+      - name: it
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: It
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /predict/start:
+    post:
+      tags:
+      - predict
+      summary: Start Encryption
+      description: 'Method for signaling start of data encryption process.
+
+        The API will store first configurations for task.
+
+
+        This method also requires an initial configuration, such as:
+
+        - Launch time: maximum date to consider for data in the API
+
+        - Address book: Host of each participant in the encryption process'
+      operationId: start_encryption_predict_start_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              title: Predict Data
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /predict/available-timestamps:
+    get:
+      tags:
+      - predict
+      summary: Get Predict Metadata
+      description: 'Method for receiving and storing final metadata prior to encryption
+        chain start.
+
+        Comprised of:
+
+        - Encryption timestamps: Timestamps common to all participants'' data
+
+        - Encryption order: ordered sequence of participants in the task
+
+        - Place in line: Ordinal position of participant in the chain (starting at
+        0)'
+      operationId: get_predict_metadata_predict_available_timestamps_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+    post:
+      tags:
+      - predict
+      summary: Post Predict Metadata
+      description: 'Method for receiving and storing final metadata prior to encryption
+        chain start.
+
+        Comprised of:
+
+        - Encryption timestamps: Timestamps common to all participants'' data
+
+        - Encryption order: ordered sequence of participants in the task
+
+        - Place in line: Ordinal position of participant in the chain (starting at
+        0)'
+      operationId: post_predict_metadata_predict_available_timestamps_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              title: Timestamps
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /predict/run:
+    post:
+      tags:
+      - predict
+      summary: Start Prediction
+      description: 'Method for signaling start of data encryption process.
+
+        The API will store first configurations for task.
+
+
+        This method also requires an initial configuration, such as:
+
+        - Launch time: maximum date to consider for data in the API
+
+        - Address book: Host of each participant in the encryption process'
+      operationId: start_prediction_predict_run_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /predict/result:
+    get:
+      tags:
+      - predict
+      summary: Get Results
+      description: 'Method for signaling start of data encryption process.
+
+        The API will store first configurations for task.
+
+
+        This method also requires an initial configuration, such as:
+
+        - Launch time: maximum date to consider for data in the API
+
+        - Address book: Host of each participant in the encryption process'
+      operationId: get_results_predict_result_get
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              title: Host Data
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    EncryptionMetadata:
+      properties:
+        encryption_order:
+          items:
+            type: string
+          type: array
+          title: Encryption Order
+        place_in_line:
+          type: integer
+          title: Place In Line
+        timestamps:
+          items:
+            type: string
+          type: array
+          title: Timestamps
+      type: object
+      required:
+      - encryption_order
+      - place_in_line
+      - timestamps
+      title: EncryptionMetadata
+    EncryptionStart:
+      properties:
+        launch_time:
+          type: string
+          title: Launch Time
+        address_book:
+          items:
+            type: string
+          type: array
+          title: Address Book
+      type: object
+      required:
+      - launch_time
+      - address_book
+      title: EncryptionStart
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
