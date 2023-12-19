@@ -7,8 +7,7 @@ info:
     \ shared processes for data encryption, model fitting and forecast generation.\n\
     \nThis documentation exposes the methods invoked by each API client instance for\
     \ requesting and sharing information with other client instances.\n\n**Developers\
-    \ // Contacts:**\n- Jo\xC3\xA3o Viana (joao.p.viana@inesctec.pt)\n- Carla Gon\xC3\
-    \xA7alves (carla.s.goncalves@inesctec.pt)\n"
+    \ // Contacts:**\n- João Viana (joao.p.viana@inesctec.pt)\n- Carla Gonçalves (carla.s.goncalves@inesctec.pt)\n"
   version: 0.1.0
 paths:
   /is-alive:
